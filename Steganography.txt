@@ -1,0 +1,32 @@
+#Openstego
+Veri çıkarma aktivitelerinde hit eder, a.Jpg dosyasında gizlenmiş veri için kullanılır. Şifre Imagination olabilir.
+Openstego aç
+Input kısmına png'yi yapıştır.
+Output kısmı çıktı alacağın yer
+Password kısmına "Imagination" yapıştır.
+------
+#SNOW
+Snow aracı ile dakikalar içinde .txt içeriğini değiştirebilirsin
+snow -C -p "magic" readme.txt
+---
+#Hashcalc
+Hashcalc ile hash hesaplama yapabilirsin.
+---
+#Veracrypt
+Disk şifreleme aracı
+Belirli bir dizini farklı bir disk mount eder gibi şifreme yapar.
+Çözümlemek için, Disk birimi seç Select File ile datayı ver şifreye ekle ve çıktıyı al
+---
+#Crackhashed
+Crackstation ya da Hashes alanında Hash'ler kırılabilir.
+---
+BC Text Encoder#
+.txt Decode için yine kullanılabilir.
+---
+Cryptool
+RC4,DES Encryption yapar
+---
+ECB Crypted
+FTP.IP.hes | ECB
+şifre var ise soruda verilir yoksa verilmez
+---

@@ -1,0 +1,22 @@
+Sudo'suz Search atma
+-v -> Verbose
+-sA -> Güvenlik duvarı tespit eder.
+-sL -> Ana bilgisayar adlarını verir.
+-iL -> Bir dosyadan tarama yapmak için.
+-sS -> Syn paketi göndererek açık portları tarayabilir.
+-oG -> Çıktı almak için kullanılır
+-sU -> UDP paketi gönderir.
+-sN -> Icmp trafiği gönderir.
+-p -> Belirli port tarama
+-A > Agresif tarama
+-Pn -> Icmp kontrol etmeksizin tarama yapar.
+
+nmap -sV -sC -A -Pn 192.168.187.0/24
+
+WampServer tespiti çin
+nmap -T4 -A -p 80,443 192.168.x.x
+SSH Tespiti
+nmap -T4 -A -p 22,23 192.168.x.x
+
+FQDN Check to Nmap
+nmap -p 389 --script ldap-rootdse 192.168.X.X

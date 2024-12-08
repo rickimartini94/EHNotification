@@ -1,0 +1,9 @@
+aircrack-ng A.cap
+-> BSSID değerini verir.
+
+aircrack-ng -w "password.txt" -b "bssid" a.cap WPA2
+
+RAT
+NJ 5552
+Thief 6703
+---

@@ -1,0 +1,18 @@
+Credential Tespiti
+http.request.method == POST
+
+How Many Machines
+tcp.flags.sync==1 and tcp.flags.ack==0
+----
+DDOS Attack Tespiti
+tcp.flags.syn==1 and tcp.flags.ack==0
+When machine DOS tcp.flags.syn==1
+Statistics
+IPV4 Statistics
+Source and Dest IP
+---
+IOT
+MQTT Search
+Publish Message
+MQ Telemetry -> Message Length
+--

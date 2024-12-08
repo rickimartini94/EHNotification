@@ -1,0 +1,6 @@
+Otomatik CVE Scanner
+Aracı başlat, sonra verdiği URL'e git
+Credential Admin/Password
+Scans->Tasks
+Task Wizard'dan IP adresi gir
+Result for Task Immediate alanından sonuçları gör

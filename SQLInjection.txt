@@ -1,0 +1,14 @@
+SQL Injection
+sqlmap --cookie="PHPSESSID=bvmadcslk7812r2oh7q7gjuba6" -u http://192.168.187.154/vulnerabilities/sqli/?id=454 --dbs
+
+Gobuster
+Dirb
+Dirbuster
+Zaproxy
+
+
+Mercury7
+CRC32 Hash
+
+https://github.com/Abhishek-Dirisipo/Ultimate-XSS-Initiator/blob/main/prac%20tips.md
+

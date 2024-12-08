@@ -1,0 +1,11 @@
+nmap -IP -sV-p 5555 -Pn
+adb connect IP:5555
+Bağlantı sonrası kabuğa geçmek için
+adbshell
+cd komutu ile dizin geçişi yapabilirsin
+Ent -> Entropi hesaplar
+-adb pull ile download edebilirsin
+/sdcart/scan
+adb pull /sdcard/adirectory dd/->Kopyalanacak path
+
+Root olmakta gerekiyor.
