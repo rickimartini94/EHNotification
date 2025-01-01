@@ -1,0 +1,7 @@
+Remote Access Trojan
+Farklı türleri yer almakta olup çıktıları aşağıda ki gibidir
+NJRAT 5552 Portunda çalışır Beş'e dikkat et
+Sol atta yer alan Build alanından çalıştırılır. gerekli data verildikten sonra
+
+Theef RAT 6703 Portunda çalışır.
+Anahtara'a basip işlem yapabilirsin

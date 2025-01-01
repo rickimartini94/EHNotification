@@ -1,0 +1,18 @@
+CVE Zafiyet açık taraması için Nmap,OpenVas,Nessus gibi araçlar kullanılabilir.
+Web üzerinde ki açıklar için Skipfish, Zaproxy gibi araçlar da kullanabilirsin.
+
+OpenVas ile bulabilmek için OpenVas'ı başlat. 
+Verdiği URL'e git, Credential Admin/Password
+
+Scans -> Task
+Task Wizard üzerinde IP'yi gir
+Result For alanından çıktıyı görebilirsin.
+
+Benzer işlem NMAP üzerinden de gerçekleştirilebilir.
+nmap -sV --script vulners 192.168.187.153
+Örnek Çıktı
+|     CVE-2015-5986    7.1    https://vulners.com/cve/CVE-2015-5986
+|     CVE-2010-3615    5.0    https://vulners.com/cve/CVE-2010-3615
+|     CVE-2006-0987    5.0    https://vulners.com/cve/CVE-2006-0987
+                       ...
+|_    CVE-2020-7068    5.0    https://vulners.com/cve/CVE-2020-7068

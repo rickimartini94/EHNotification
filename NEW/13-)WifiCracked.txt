@@ -1,0 +1,4 @@
+aircrack-ng 9.cap
+-> BSSID değerini verir.
+
+aircrack-ng -w "password.txt" -b "bssid" a.cap WPA2

