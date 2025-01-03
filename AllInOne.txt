@@ -458,7 +458,7 @@ aircrack-ng -w "password.txt" -b "bssid" a.cap WPA2
 --------------------------------------------------------------------------
 Some extra work
 
-H^(ker@EC
+
 Check RDP enabled after getting ip- nmap -p 3389 -iL ip.txt | grep open (ip.txt contains all the alive hosts from target subnet)
 Check MySQL service running- nmap -p 3306 -iL ip.txt | grep open        (ip.txt contains all the alive hosts from target subnet)
 
