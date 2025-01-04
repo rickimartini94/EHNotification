@@ -1,0 +1,39 @@
+TR -> En
+/ -> .
+. -> ç
+ş -> ; 
+: ->Shift + ş
+\ -> ,
+# -> Shift + 3
+$ -> Shift + 4
+@ -> Shift + 2
+^ -> Shift + 6
+---
+wpscan --url https://example.com --usernames /path --passwords /path 
+---
+Hashes.com
+---
+crackstation.net
+---
+BcTextEncoder
+Decode edilmiş .txt içeriğini görmemizi sağlar.
+---
+Cryptool
+Rc4 Aes gibi şifrelenmiş metinleri çözülmesi için kullanılır
+---
+smb-os-discovery.nse
+---
+SSH üzerinden dosya çekme
+scp admin@IP :C/Windows 
+---
+Rdesktop ile RDP kurabilirsin
+rdesktop IP -k tr -z -u Vagrant -p Vagrant
+----
+find / -name "3c_.txt"
+3c dikkat et verada işe yarar.  
+locate 3c_.txt
+-----
+dirb http://192.168.187.153/ /usr/share/wordlists/dirb/common.txt | grep CODE:200
+---
+Wireshark ip.dst == 172.20.0.21
+---
